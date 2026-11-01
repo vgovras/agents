@@ -46,9 +46,6 @@ An instruction is `instructions/<name>.md`: `make skill tui` adds it to `~/.clau
 Rules:
 - Prefer project level; user level only when asked.
 - An item already installed → compare and ask before overwriting local changes.
-- Agents are stack-agnostic and use whatever skills are installed; recommended with them:
-  `backend-architect` → `backend-module-structure`, `rest-api-design`, `clean-code`;
-  `coder` → `clean-code`, `testing`; `reviewer` → all four.
-  Stack skills (`typescript`, `nestjs`, `drizzle`, `dev-environment`, `lint-format`) → all three agents when the project uses that stack.
-- `backend-workflow` needs the agents `backend-architect`, `coder`, `reviewer`.
-- After adding a skill/agent here, add its row to the catalog.
+- Dependencies are in `deps.conf` (`<kind>/<name>: <kind>/<name> ...`). Installing an item → install what it needs too, transitively; `make skill tui` does it.
+- Agents are stack-agnostic and use whatever skills are installed; add the stack skills (`typescript`, `nestjs`, `drizzle`, `dev-environment`, `lint-format`) when the project uses that stack.
+- After adding a skill/agent here, add its row to the catalog and its dependencies to `deps.conf`.

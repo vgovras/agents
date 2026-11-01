@@ -15,7 +15,7 @@ plus `make skill tui`: a bash TUI that shows what is installed at user level and
 
 ```sh
 cp env.example .env   # optional: CONTEXT7_API_KEY
-make skill tui        # arrows, space = mark, enter = install marked, x = remove, d = diff, q = quit
+make skill tui        # arrows, space = mark, enter = install marked (+ missing deps from deps.conf), x = remove, d = diff, q = quit
 make skill list       # plain table
 ```
 

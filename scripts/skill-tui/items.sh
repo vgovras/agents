@@ -2,6 +2,8 @@
 
 declare -A STATES      # "row/col" -> state, filled by collect_rows (slow: CLI calls, diffs)
 declare -A REMOTE_DIRS # skill name -> fetched copy, filled once per run
+declare -A DEPS        # "kind/name" -> "kind/name ..." it needs, from deps.conf
+declare -A ROW_INDEX   # "kind/name" -> its index in ROWS
 
 fetch_remote() { # skills/<name>/remote.env (REPO, DIR) -> fills REMOTE_DIRS[name] from ~/.cache/harness/<name>
   local REPO DIR name cache
@@ -22,7 +24,7 @@ add_row() { # kind name src; the first row per kind/name wins (repo rows are add
 
 collect_rows() {
   local -A seen
-  local file name target
+  local file name target i kind
   ROWS=()
   load_codex_mcp
   while read -r file; do
@@ -44,7 +46,36 @@ collect_rows() {
   done
 
   mapfile -t ROWS < <(printf '%s\n' "${ROWS[@]}" | sort)
+  ROW_INDEX=()
+  for i in "${!ROWS[@]}"; do IFS='|' read -r kind name _ <<<"${ROWS[i]}"; ROW_INDEX[$kind/$name]=$i; done
+  load_deps
   collect_states
+}
+
+load_deps() { # deps.conf lines "<kind>/<name>: <kind>/<name> ..." -> DEPS
+  local item needs
+  local -a list
+  DEPS=()
+  [[ -f deps.conf ]] || return 0
+  while IFS=: read -r item needs; do
+    [[ -z $item || $item == '#'* ]] && continue
+    read -ra list <<<"$needs"
+    DEPS[$item]=${list[*]}
+  done <deps.conf
+}
+
+dep_closure() { # kind/name -> every kind/name it needs, transitively, once each
+  local -A seen=([$1]=1)
+  local -a queue=("$1")
+  local current dep
+  while ((${#queue[@]})); do
+    current=${queue[0]} queue=("${queue[@]:1}")
+    for dep in ${DEPS[$current]:-}; do
+      [[ -z ${seen[$dep]:-} ]] || continue
+      seen[$dep]=1 queue+=("$dep")
+      echo "$dep"
+    done
+  done
 }
 
 collect_states() {

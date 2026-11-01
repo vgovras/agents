@@ -62,7 +62,24 @@ cell_item() { # "row/col" -> fills item=(kind name src target)
   item=("$kind" "$name" "$src" "${TARGETS[${1#*/}]}")
 }
 
-install_selected() { # marked cells (or the current one): missing ones, plus modified ones after one confirm -> sets message
+with_deps() { # cells... -> the same cells, then cells of the missing items they need in the same target column
+  local cell col dep i
+  local -a item
+  local -A seen
+  for cell in "$@"; do seen[$cell]=1; echo "$cell"; done
+  for cell in "$@"; do
+    cell_item "$cell"
+    col=${cell#*/}
+    while read -r dep; do
+      i=${ROW_INDEX[$dep]:-}
+      [[ -n $i && ${STATES[$i/$col]:-} == missing && -z ${seen[$i/$col]:-} ]] || continue
+      seen[$i/$col]=1
+      echo "$i/$col"
+    done < <(dep_closure "${item[0]}/${item[1]}")
+  done
+}
+
+install_selected() { # marked cells (or the current one): missing ones, plus modified ones after one confirm, plus missing deps -> sets message
   local cells=("${!SELECTED[@]}") cell state error installed=0
   local -a item pending=() changed=() changed_names=() errors=()
   ((${#cells[@]})) || cells=("$row/$col")
@@ -75,13 +92,15 @@ install_selected() { # marked cells (or the current one): missing ones, plus mod
     esac
   done
   ((${#changed[@]})) && confirm "Overwrite local changes in ${changed_names[*]}?" && pending+=("${changed[@]}")
+  local chosen=${#pending[@]}
+  ((chosen)) && mapfile -t pending < <(with_deps "${pending[@]}")
   local -A asked
   for cell in "${pending[@]}"; do
     cell_item "$cell"
     [[ ${item[0]} == mcp && -z ${asked[${item[2]}]:-} ]] && { asked[${item[2]}]=1; ask_token "${item[2]}"; }
     error=$(with_spinner "installing $(item_label)" install_item "${item[@]}" </dev/null 2>&1 >/dev/null) && installed=$((installed + 1)) || errors+=("$(item_label): $error")
   done
-  message="installed $installed${errors[*]:+, failed: ${errors[*]}}"
+  message="installed $installed$(((${#pending[@]} > chosen)) && echo " (with $((${#pending[@]} - chosen)) dependencies)")${errors[*]:+, failed: ${errors[*]}}"
 }
 
 read_secret() { # prompt -> typed or pasted line, one * per character. Enter ends, Backspace deletes, Esc/Ctrl+C cancels
@@ -119,7 +138,7 @@ run_tui() {
     clear
     printf '\e[1mskill-tui  up/down item  left/right target  space mark  enter install  x remove  d diff  q quit\e[0m\n\n'
     print_table "$row" "$col"
-    printf '\ntarget: %s\n\e[1m%s\e[0m\n' "$(install_dir "${item[0]}" "${item[3]}")" "$message"
+    printf '\ntarget: %s\nneeds:  %s\n\e[1m%s\e[0m\n' "$(install_dir "${item[0]}" "${item[3]}")" "${DEPS[${item[0]}/${item[1]}]:--}" "$message"
     message=""
     key=$(read_key) # Enter arrives as "" (command substitution drops the newline)
     case $key in
