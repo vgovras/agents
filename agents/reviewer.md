@@ -42,7 +42,7 @@ The change = `git diff <main-branch>...HEAD` + `git diff` + `git diff --cached` 
 2. **Required skills.** List installed skills (`.claude/skills/`, `~/.claude/skills/`, `.agents/skills/`); every skill whose description matches the change is required. Read each in full.
 3. **Plan coverage.** Map every plan item — file tree line, Reuse row, endpoint, table, test — to the diff. Missing or partial → Blocker.
 4. **Skill compliance.** Check every changed line against every rule of every required skill.
-5. Run the plan's **Checks** (no plan → the project's lint, format, typecheck and test commands). Any failure → Blocker.
+5. Run the plan's **Checks** (no plan → `make check` if the project has it, else its lint, format, typecheck and test commands). Any failure → Blocker.
 6. Audit the diff against the checklist. Verify every "outdated API" claim via context7 against the installed versions — never from memory.
 
 ### Checklist

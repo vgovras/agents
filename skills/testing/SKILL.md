@@ -9,7 +9,7 @@ description: Use when writing, modifying, or reviewing tests (*.spec.ts, *.integ
 
 | Type | When | Mocks | File |
 |---|---|---|---|
-| Unit | Pure synchronous logic with exact input → output: math, parsing, mapping, data transformation | None, ever. Logic that needs a mock is not unit-testable — extract the pure part into `.utils.ts` | `<name>.utils.ts` + `<name>.utils.spec.ts` next to it |
+| Unit | Pure synchronous logic with exact input → output: math, parsing, mapping, data transformation | None, ever. Logic that needs a mock is not unit-testable — extract the pure part into a service with no dependencies (`<domain>-rules.service.ts`) or a `libs/` helper; never a `utils` file | `<name>.spec.ts` next to the tested file; instantiate with `new` |
 | Integration | Logic that depends on an external provider (email, SMS, S3, payment, any vendor API) | Only the external provider, via its `I<Name>` token. Never the DB | `test/integrations/<name>.integrations-spec.ts` |
 | E2E | The system works end to end: HTTP → modules → DB | None | `test/e2e/<name>.e2e-spec.ts` |
 

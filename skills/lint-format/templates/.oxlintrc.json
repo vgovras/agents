@@ -1,0 +1,482 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": [
+    "eslint",
+    "typescript",
+    "unicorn",
+    "import",
+    "node",
+    "promise",
+    "oxc"
+  ],
+  "env": {
+    "node": true,
+    "es2024": true
+  },
+  "options": {
+    "typeAware": true,
+    "reportUnusedDisableDirectives": "error"
+  },
+  "categories": {
+    "correctness": "error",
+    "suspicious": "error",
+    "pedantic": "error",
+    "perf": "error",
+    "style": "off",
+    "restriction": "off",
+    "nursery": "off"
+  },
+  "rules": {
+    "typescript/prefer-readonly-parameter-types": "off",
+    "eslint/require-await": "off",
+    "eslint/max-lines-per-function": [
+      "error",
+      {
+        "max": 40,
+        "skipBlankLines": true,
+        "skipComments": true
+      }
+    ],
+    "eslint/max-depth": [
+      "error",
+      {
+        "max": 2
+      }
+    ],
+    "eslint/max-nested-callbacks": [
+      "error",
+      {
+        "max": 3
+      }
+    ],
+    "eslint/complexity": [
+      "error",
+      {
+        "max": 8
+      }
+    ],
+    "eslint/max-params": [
+      "error",
+      {
+        "max": 4
+      }
+    ],
+    "typescript/no-extraneous-class": [
+      "error",
+      {
+        "allowWithDecorator": true
+      }
+    ],
+    "typescript/no-explicit-any": "error",
+    "typescript/no-non-null-assertion": "error",
+    "typescript/explicit-module-boundary-types": "error",
+    "typescript/explicit-member-accessibility": [
+      "error",
+      {
+        "accessibility": "no-public"
+      }
+    ],
+    "typescript/parameter-properties": [
+      "error",
+      {
+        "prefer": "parameter-property"
+      }
+    ],
+    "typescript/consistent-type-definitions": [
+      "error",
+      "interface"
+    ],
+    "typescript/consistent-indexed-object-style": [
+      "error",
+      "record"
+    ],
+    "typescript/array-type": [
+      "error",
+      {
+        "default": "array-simple"
+      }
+    ],
+    "typescript/no-inferrable-types": "error",
+    "typescript/no-import-type-side-effects": "error",
+    "typescript/no-namespace": "error",
+    "typescript/prefer-for-of": "error",
+    "typescript/prefer-readonly": "error",
+    "typescript/promise-function-async": "error",
+    "typescript/no-empty-interface": "off",
+    "eslint/no-console": "error",
+    "eslint/no-param-reassign": "error",
+    "eslint/no-var": "error",
+    "eslint/prefer-const": "error",
+    "eslint/curly": [
+      "error",
+      "all"
+    ],
+    "eslint/eqeqeq": [
+      "error",
+      "always"
+    ],
+    "eslint/func-style": [
+      "error",
+      "declaration"
+    ],
+    "eslint/no-nested-ternary": "error",
+    "eslint/prefer-template": "error",
+    "eslint/object-shorthand": "error",
+    "eslint/no-useless-computed-key": "error",
+    "eslint/no-implicit-coercion": "off",
+    "eslint/yoda": "error",
+    "eslint/default-case": "off",
+    "eslint/no-magic-numbers": [
+      "error",
+      {
+        "ignore": [
+          0,
+          1,
+          -1,
+          2
+        ],
+        "ignoreEnums": true,
+        "ignoreNumericLiteralTypes": true,
+        "ignoreReadonlyClassProperties": true,
+        "ignoreTypeIndexes": true,
+        "enforceConst": true,
+        "ignoreClassFieldInitialValues": true,
+        "ignoreDefaultValues": true
+      }
+    ],
+    "eslint/no-throw-literal": "error",
+    "eslint/no-empty-function": "error",
+    "import/no-cycle": "error",
+    "import/no-default-export": "error",
+    "import/no-duplicates": "error",
+    "import/first": "error",
+    "import/no-mutable-exports": "error",
+    "import/no-commonjs": "error",
+    "import/extensions": [
+      "error",
+      "always",
+      {
+        "ignorePackages": true
+      }
+    ],
+    "unicorn/filename-case": [
+      "error",
+      {
+        "case": "kebabCase"
+      }
+    ],
+    "unicorn/prefer-node-protocol": "error",
+    "unicorn/no-array-for-each": "error",
+    "unicorn/no-array-reduce": "error",
+    "unicorn/no-nested-ternary": "off",
+    "unicorn/no-null": "off",
+    "unicorn/no-process-exit": "error",
+    "unicorn/no-useless-undefined": "error",
+    "unicorn/text-encoding-identifier-case": "error",
+    "node/no-process-env": "error",
+    "eslint/no-restricted-imports": [
+      "error",
+      {
+        "patterns": [
+          {
+            "group": [
+              "../**"
+            ],
+            "message": "Use #src/... for anything outside this folder."
+          },
+          {
+            "group": [
+              "#src/modules/*/dto/*",
+              "#src/modules/*/schemas/*",
+              "#src/modules/*/*.schema.js",
+              "#src/modules/*/*.controller.js"
+            ],
+            "message": "Private to its module: import the module's service, types, constants or module file."
+          }
+        ]
+      }
+    ],
+    "import/max-dependencies": [
+      "error",
+      {
+        "max": 20
+      }
+    ],
+    "naming/enum-style": "error",
+    "padding/blank-lines": "error",
+    "comparison/no-explicit-comparison": "error",
+    "typescript/strict-boolean-expressions": "off"
+  },
+  "overrides": [
+    {
+      "files": [
+        "src/modules/<module>/**"
+      ],
+      "rules": {
+        "eslint/no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "../**"
+                ],
+                "message": "Use #src/... for anything outside this folder."
+              },
+              {
+                "group": [
+                  "#src/modules/*/dto/*",
+                  "#src/modules/*/schemas/*",
+                  "#src/modules/*/*.schema.js",
+                  "#src/modules/*/*.controller.js",
+                  "!#src/modules/<module>/**"
+                ],
+                "message": "Private to its module."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": [
+        "src/libs/**"
+      ],
+      "rules": {
+        "eslint/no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "../**"
+                ],
+                "message": "Use #src/... for anything outside this folder."
+              },
+              {
+                "group": [
+                  "#src/modules/**",
+                  "#src/actions/**",
+                  "#src/common/**"
+                ],
+                "message": "libs must not depend on modules, actions or common."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": [
+        "src/common/**"
+      ],
+      "rules": {
+        "eslint/no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "../**"
+                ],
+                "message": "Use #src/... for anything outside this folder."
+              },
+              {
+                "group": [
+                  "#src/modules/*/dto/*",
+                  "#src/modules/*/schemas/*",
+                  "#src/modules/*/*.schema.js",
+                  "#src/modules/*/*.controller.js"
+                ],
+                "message": "Private to its module."
+              },
+              {
+                "group": [
+                  "#src/modules/**",
+                  "#src/actions/**"
+                ],
+                "message": "libs/common must not depend on modules or actions."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": [
+        "**/*.config.ts",
+        "drizzle.config.ts"
+      ],
+      "rules": {
+        "import/no-default-export": "off",
+        "node/no-process-env": "off"
+      }
+    },
+    {
+      "files": [
+        "lint/*.plugin.ts"
+      ],
+      "rules": {
+        "import/no-default-export": "off"
+      }
+    },
+    {
+      "files": [
+        "src/libs/db/db.config.ts"
+      ],
+      "rules": {
+        "node/no-process-env": "off"
+      }
+    },
+    {
+      "files": [
+        "src/actions/*.command.ts",
+        "src/actions/*.query.ts"
+      ],
+      "rules": {
+        "eslint/max-classes-per-file": [
+          "error",
+          {
+            "max": 2
+          }
+        ]
+      }
+    },
+    {
+      "files": [
+        "**/*.spec.ts",
+        "**/*.e2e-spec.ts",
+        "test/**/*.ts"
+      ],
+      "plugins": [
+        "vitest"
+      ],
+      "rules": {
+        "eslint/no-magic-numbers": "off",
+        "eslint/max-lines-per-function": "off",
+        "eslint/max-nested-callbacks": "off",
+        "typescript/no-non-null-assertion": "off",
+        "vitest/consistent-test-it": [
+          "error",
+          {
+            "fn": "it",
+            "withinDescribe": "it"
+          }
+        ],
+        "vitest/require-top-level-describe": "error",
+        "vitest/max-nested-describe": [
+          "error",
+          {
+            "max": 2
+          }
+        ],
+        "vitest/prefer-hooks-on-top": "error",
+        "vitest/prefer-hooks-in-order": "error",
+        "vitest/no-duplicate-hooks": "error",
+        "vitest/no-identical-title": "error",
+        "vitest/prefer-to-be": "error",
+        "vitest/prefer-to-have-length": "error",
+        "vitest/prefer-strict-equal": "error",
+        "vitest/no-test-return-statement": "error",
+        "vitest/no-conditional-in-test": "error",
+        "vitest/require-to-throw-message": "error"
+      }
+    },
+    {
+      "files": [
+        "src/modules/**/services/*.ts",
+        "src/modules/**/*.service.ts"
+      ],
+      "rules": {
+        "typescript/explicit-module-boundary-types": "off"
+      }
+    },
+    {
+      "files": [
+        "src/**/dto/*.dto.ts"
+      ],
+      "rules": {
+        "eslint/max-classes-per-file": "off"
+      }
+    },
+    {
+      "files": [
+        "src/actions/**",
+        "src/actions.module.ts"
+      ],
+      "rules": {
+        "eslint/no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "../**"
+                ],
+                "message": "Use #src/... for anything outside this folder."
+              },
+              {
+                "group": [
+                  "#src/modules/*/dto/*",
+                  "#src/modules/*/*.controller.js"
+                ],
+                "message": "Private to its module: import the module's service, types, constants or module file."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": [
+        "src/db.relations.ts"
+      ],
+      "rules": {
+        "eslint/no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "../**"
+                ],
+                "message": "Use #src/... for anything outside this folder."
+              },
+              {
+                "group": [
+                  "#src/modules/*/*.controller.js"
+                ],
+                "message": "Private to its module: import the module's service, types, constants or module file."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": [
+        "**/dto/*.ts",
+        "**/*.model.ts",
+        "**/*.schema.ts",
+        "src/common/*.dto.ts",
+        "src/main.ts",
+        "src/**/*.controller.ts",
+        "src/common/exception.filter.ts"
+      ],
+      "rules": {
+        "eslint/no-magic-numbers": "off"
+      }
+    }
+  ],
+  "ignorePatterns": [
+    "dist/**",
+    "drizzle/**",
+    "node_modules/**",
+    "coverage/**"
+  ],
+  "jsPlugins": [
+    "./lint/naming.plugin.ts",
+    "./lint/padding.plugin.ts",
+    "./lint/comparison.plugin.ts"
+  ]
+}

@@ -11,6 +11,11 @@ Each item's full "when to use" is in its frontmatter `description` — read it t
 | skill | `backend-module-structure` | `skills/architectures/backend-module-structure/` | backend module architecture, any language |
 | skill | `rest-api-design` | `skills/rest-api-design/` | REST endpoints/controllers |
 | skill | `testing` | `skills/testing/` | unit/integration/e2e tests (TS) |
+| skill | `typescript` | `skills/typescript/` | tsconfig, imports, types, enums (TS) |
+| skill | `nestjs` | `skills/nestjs/` | CQRS actions, controllers, DTOs, transactions |
+| skill | `drizzle` | `skills/drizzle/` | Drizzle schemas, models, relations, queries |
+| skill | `dev-environment` | `skills/dev-environment/` | compose + Makefile, pnpm, dependency versions |
+| skill | `lint-format` | `skills/lint-format/` | oxlint + oxfmt, custom rules, import boundaries |
 | skill (remote) | `ponytail` | `skills/ponytail/remote.env` | smallest complete change |
 | agent | `backend-architect` | `agents/backend-architect.md` | backend design plan before non-trivial work |
 | agent | `coder` | `agents/coder.md` | implement a user task (inline or `tasks/`) |
@@ -44,5 +49,6 @@ Rules:
 - Agents are stack-agnostic and use whatever skills are installed; recommended with them:
   `backend-architect` → `backend-module-structure`, `rest-api-design`, `clean-code`;
   `coder` → `clean-code`, `testing`; `reviewer` → all four.
+  Stack skills (`typescript`, `nestjs`, `drizzle`, `dev-environment`, `lint-format`) → all three agents when the project uses that stack.
 - `backend-workflow` needs the agents `backend-architect`, `coder`, `reviewer`.
 - After adding a skill/agent here, add its row to the catalog.

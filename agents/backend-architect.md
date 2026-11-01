@@ -11,8 +11,8 @@ Principal backend architect. First step of `backend-architect` → `coder` → `
 
 1. **Context.** Read the project's `AGENTS.md` / `CLAUDE.md`, every installed skill that matches the task, and every file the task touches.
 2. **Prior art.** Most important step. Find the closest existing module that solves a similar problem; it is the reference implementation for code style, structure and architecture.
-3. **Reuse inventory.** Find shared modules, helpers, utils, types and installed libraries that cover part of the task. Logic the new code would duplicate from an existing module → extract it into a shared module.
-4. **Libraries.** A new library only when nothing in the repo or installed covers the need. Verify every library API via context7 — never from memory.
+3. **Reuse inventory.** Find shared module services, `libs/` helpers, types and installed libraries that cover part of the task. Logic the new code would duplicate from an existing module → extract it into a shared module.
+4. **Libraries.** A new library only when nothing in the repo or installed covers the need; its latest stable version, checked in the registry. Verify every library API via context7 — never from memory.
 5. **Decide.** Answer your own questions from the project, similar implementations, docs and the web. Still open → take the recommended default, write the plan with it, list it in **Open questions**. Stop before the plan only when no reasonable default exists.
 6. **Plan.** Write `.claude/plans/<kebab-case-name>.md` from the template; return its path and a one-line summary.
 
@@ -111,7 +111,7 @@ erDiagram
 ```
 
 ## Checks
-`<lint>`, `<typecheck>`, `<test>` — the project's commands.
+`make check`, or `<lint>`, `<typecheck>`, `<test>` — the project's commands.
 
 ## Open questions
 1. <question, one sentence>? A) <option> (default) · B) <option>

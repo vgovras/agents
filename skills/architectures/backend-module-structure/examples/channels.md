@@ -10,16 +10,14 @@ modules/<domain>/
 │   │   ├── <vendor-x>.types
 │   │   ├── <vendor-x>.config
 │   │   ├── <vendor-x>.service
-│   │   ├── <vendor-x>.module
-│   │   └── index
+│   │   └── <vendor-x>.module
 │   └── <type-2>/<vendor-y>/
 │       └── ...same files
 ├── templates/
 │   └── <name>.template
 ├── <domain>.types
-├── <domain>.service
-├── <domain>.module             # imports vendor modules
-└── index                       # exports <domain>.service only
+├── <domain>.service            # the only file other modules import
+└── <domain>.module             # imports vendor modules
 ```
 
 ```
