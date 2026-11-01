@@ -40,6 +40,7 @@ Principal backend architect. First step of `backend-architect` → `coder` → `
 - **Name every data shape** (skill `clean-code` › Types): a shape used in a contract, response or error gets a name, is defined once and is referenced by that name everywhere else. NEVER write an anonymous inline structure in a signature, field or example.
 - Every new file and every reused item points to an existing `path` the coder can follow.
 - **Parts** split the work for coders running in parallel: every File tree file belongs to exactly one part; parts that run at the same time share no file; `After` lists the parts whose output a part needs. Level: `simple` = fully specified, no decisions left (CRUD, DTOs, migration, listed tests); `complex` = logic, transactions, cross-module flow.
+- **Section order: what before how.** Goal, then the contract and the big picture the user approves (API, Modules, Data model, Open questions), then the details for the coder (Reference, Reuse, Libraries, File tree, Parts, Checks). Keep the template's order.
 - Omit every section that does not apply; **Goal**, **Reference**, **File tree**, **Parts**, **Modules** and **Checks** are always present.
 
 ## Plan template
@@ -51,6 +52,43 @@ Illustrative only. Copy the structure, never the names or values.
 
 ## Goal
 <What and why, 1–2 sentences.>
+
+## API
+### `POST /v1/<resources>/:<id>/<action>`
+<One line: what it does.>
+
+req
+```json
+{ "<field>": "<type>" }
+```
+res `200`
+```json
+{ "<field>": "<type>" }
+```
+err
+| HTTP | Code | When |
+|---|---|---|
+| `4xx` | `<error.key>` | <few words> |
+
+## Modules
+```mermaid
+flowchart LR
+  <moduleA> --> <moduleB>
+  <moduleB> --> <IChannel>
+```
+
+## Data model
+```mermaid
+erDiagram
+  <TABLE_A> ||--o{ <TABLE_B> : <relation>
+  <TABLE_A> {
+    <type> id PK
+    <type> <column>
+  }
+```
+
+## Open questions
+1. <question, one sentence>? A) <option> (default) · B) <option>
 
 ## Reference
 Follow `<path/to/similar-module>/` — <what to copy: structure, style, flow>.
@@ -84,43 +122,6 @@ Follow `<path/to/similar-module>/` — <what to copy: structure, style, flow>.
 | 2 | <service> | `<path>` | 1 | complex |
 | 3 | <controller + DTOs> | `<path>` | 2 | simple |
 
-## Modules
-```mermaid
-flowchart LR
-  <moduleA> --> <moduleB>
-  <moduleB> --> <IChannel>
-```
-
-## API
-### `POST /v1/<resources>/:<id>/<action>`
-<One line: what it does.>
-
-req
-```json
-{ "<field>": "<type>" }
-```
-res `200`
-```json
-{ "<field>": "<type>" }
-```
-err
-| HTTP | Code | When |
-|---|---|---|
-| `4xx` | `<error.key>` | <few words> |
-
-## Data model
-```mermaid
-erDiagram
-  <TABLE_A> ||--o{ <TABLE_B> : <relation>
-  <TABLE_A> {
-    <type> id PK
-    <type> <column>
-  }
-```
-
 ## Checks
 `make check`, or `<lint>`, `<typecheck>`, `<test>` — the project's commands.
-
-## Open questions
-1. <question, one sentence>? A) <option> (default) · B) <option>
 ````
