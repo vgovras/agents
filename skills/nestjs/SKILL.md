@@ -19,7 +19,7 @@ Folder layout and which code goes where: skill `backend-module-structure`. This 
 - Fields on the class, no input interfaces:
   ```ts
   export class <Entity><Action>Command extends Command<<Result>> {
-    declare readonly id: string;
+    readonly id: string;
 
     constructor(data?: CommandProps<<Entity><Action>Command>) {
       super();
@@ -66,7 +66,7 @@ Folder layout and which code goes where: skill `backend-module-structure`. This 
 
 ```
 - [ ] Command/query + handler in one src/actions/ file, class name = file name
-- [ ] Fields declared on the command, CommandProps constructor, no input interface
+- [ ] Fields on the command (`readonly <field>: <type>;`, no `declare`), CommandProps constructor, no input interface
 - [ ] Handler registered in ActionsModule
 - [ ] Controller: bus for actions, service for plain CRUD, *ResDto or shared DTO return type
 - [ ] Validation and conversion only at the controller edge (DTOs, pipes); ParseUUIDPipe with 404

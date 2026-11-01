@@ -1,4 +1,4 @@
-# Table and interactive loop. Keys: up/down item, left/right target, space mark, enter install, x remove, d diff, q quit.
+# Table and interactive loop. Keys: up/down item, left/right target, space mark, enter install, a install all, x remove, d diff, q quit.
 
 declare -A SELECTED # "row/col" -> 1 for cells marked to install
 declare -A STATE_COLORS=([same]=32 [modified]=33 [missing]=31 ["local only"]=36)
@@ -125,6 +125,15 @@ ask_token() { # src: an MCP server with an optional token that is not set yet ->
   [[ -z $value ]] || save_token "$TOKEN_ENV" "$value"
 }
 
+select_all() { # every missing or modified cell, all targets -> SELECTED; returns 1 when there is none
+  local cell
+  SELECTED=()
+  for cell in "${!STATES[@]}"; do
+    [[ ${STATES[$cell]} == missing || ${STATES[$cell]} == modified ]] && SELECTED[$cell]=1
+  done
+  ((${#SELECTED[@]}))
+}
+
 run_tui() {
   local row=0 col=0 message="" key state
   local -a item
@@ -136,7 +145,7 @@ run_tui() {
     cell_item "$row/$col"
     state=${STATES[$row/$col]:-}
     clear
-    printf '\e[1mskill-tui  up/down item  left/right target  space mark  enter install  x remove  d diff  q quit\e[0m\n\n'
+    printf '\e[1mskill-tui  up/down item  left/right target  space mark  enter install  a install all  x remove  d diff  q quit\e[0m\n\n'
     print_table "$row" "$col"
     printf '\ntarget: %s\nneeds:  %s\n\e[1m%s\e[0m\n' "$(install_dir "${item[0]}" "${item[3]}")" "${DEPS[${item[0]}/${item[1]}]:--}" "$message"
     message=""
@@ -149,6 +158,8 @@ run_tui() {
       ' ') [[ $state == missing || $state == modified ]] || continue
            if [[ -n ${SELECTED[$row/$col]:-} ]]; then unset "SELECTED[$row/$col]"; else SELECTED[$row/$col]=1; fi ;;
       '') install_selected; refresh ;;
+      a) if ! select_all; then message="nothing to install"; continue; fi
+         if confirm "Install all ${#SELECTED[@]} missing or modified items in every target?"; then install_selected; refresh; else SELECTED=(); fi ;;
       d) [[ $state == same || $state == modified ]] && show_diff "${item[@]}" | less -R ;;
       x) [[ $state == same || $state == modified || $state == "local only" ]] || continue
          confirm "Remove ${item[0]} ${item[1]} from ${item[3]}?$([[ $state == "local only" ]] && echo ' NOT in the repo: deletes the only copy.')" || continue

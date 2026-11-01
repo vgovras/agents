@@ -25,7 +25,7 @@ $(wordlist 2,99,$(MAKECMDGOALS)):
 	@:
 endif
 
-skill/tui: ## skills, agents, MCP, instructions: state per target, mark (space), install marked (enter), remove (x), diff (d)
+skill/tui: ## skills, agents, MCP, instructions: state per target, mark (space), install marked (enter), install all (a), remove (x), diff (d)
 	@[ -f .env ] || { cp env.example .env && chmod 600 .env; }
 	@scripts/skill-tui/skill-tui.sh tui
 

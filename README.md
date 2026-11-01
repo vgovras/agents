@@ -4,7 +4,7 @@
 
 ```sh
 make                  # list commands
-make skill tui        # creates .env from env.example (optional CONTEXT7_API_KEY); arrows, space = mark, enter = install marked (+ missing deps from deps.conf), x = remove, d = diff, q = quit
+make skill tui        # creates .env from env.example (optional CONTEXT7_API_KEY); arrows, space = mark, enter = install marked (+ missing deps from deps.conf), a = install all, x = remove, d = diff, q = quit
 make skill list       # plain table
 ```
 
