@@ -20,9 +20,11 @@ Blockers
 - [ ] Reuse: no existing module, helper or installed library left out
 - [ ] Module graph acyclic; no reaching into another module's internals or tables
 - [ ] Variation points behind an interface
+- [ ] Parts: every File tree file in exactly one part; parts without an `After` link between them share no file; `After` matches the real dependencies (schema → service → action → controller)
 
 Should fix
 - [ ] Reference is the closest existing module
+- [ ] Parts as parallel as the dependencies allow; Level fits (`simple` only when no decision is left to the coder)
 - [ ] Extract shared only for real duplication (Rule of Three)
 - [ ] Every required skill followed; cite the rule: [<skill> › <section>]
 - [ ] Minimal text: descriptions ≤ 2 sentences, no implementation code

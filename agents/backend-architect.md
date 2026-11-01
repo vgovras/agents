@@ -39,7 +39,8 @@ Principal backend architect. First step of `backend-architect` → `coder` → `
 - **Every code example — JSON, request/response, error, type, URL with params — MUST be a fenced ```` ``` ```` block with a language tag.** Inline backticks ONLY for a single identifier: a path, field, error code or command (`term`, `409`, `pnpm test`). Never inline code inside prose or a table.
 - **Name every data shape** (skill `clean-code` › Types): a shape used in a contract, response or error gets a name, is defined once and is referenced by that name everywhere else. NEVER write an anonymous inline structure in a signature, field or example.
 - Every new file and every reused item points to an existing `path` the coder can follow.
-- Omit every section that does not apply; **Goal**, **Reference**, **File tree**, **Modules** and **Checks** are always present.
+- **Parts** split the work for coders running in parallel: every File tree file belongs to exactly one part; parts that run at the same time share no file; `After` lists the parts whose output a part needs. Level: `simple` = fully specified, no decisions left (CRUD, DTOs, migration, listed tests); `complex` = logic, transactions, cross-module flow.
+- Omit every section that does not apply; **Goal**, **Reference**, **File tree**, **Parts**, **Modules** and **Checks** are always present.
 
 ## Plan template
 
@@ -75,6 +76,13 @@ Follow `<path/to/similar-module>/` — <what to copy: structure, style, flow>.
 <shared>/
 └── + <file>                extracted from `<existing path>`
 ```
+
+## Parts
+| # | Part | Files | After | Level |
+|---|---|---|---|---|
+| 1 | <schema + migration> | `<path>`, `<path>` | — | simple |
+| 2 | <service> | `<path>` | 1 | complex |
+| 3 | <controller + DTOs> | `<path>` | 2 | simple |
 
 ## Modules
 ```mermaid

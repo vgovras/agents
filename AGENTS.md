@@ -30,7 +30,7 @@ Each item's full "when to use" is in its frontmatter `description` — read it t
 
 A skill is a folder with `SKILL.md`; copy the whole folder, named after the skill.
 A remote skill is only `remote.env` (`REPO`, `DIR`): copy `DIR` from that repo instead (`make skill tui` does it).
-An agent is one `.md` file (Claude Code subagent format: `tools`, `model` in frontmatter).
+An agent is one `.md` file (Claude Code subagent format: `tools`, `model` in frontmatter); for Codex `make skill tui` converts it to a custom agent `.toml` (name, description, body as `developer_instructions`; no model, the spawn call picks it).
 An MCP server is `mcp/<name>.env` (`URL`, optional `TOKEN_ENV`/`TOKEN_HEADER`); install it with the tool's CLI or `make skill tui`.
 An optional `mcp/<name>.md` is its "when to use" section: `make skill tui` adds it to `~/.claude/CLAUDE.md` / `~/.codex/AGENTS.md` between `<!-- harness:mcp:<name> -->` markers and removes it with the server.
 An instruction is `instructions/<name>.md`: `make skill tui` adds it to `~/.claude/CLAUDE.md` / `~/.codex/AGENTS.md` between `<!-- harness:instruction:<name> -->` markers.
@@ -40,8 +40,8 @@ An instruction is `instructions/<name>.md`: `make skill tui` adds it to `~/.clau
 |---|---|---|
 | Claude Code — project | `.claude/skills/<name>/` | `.claude/agents/<name>.md` |
 | Claude Code — user | `~/.claude/skills/<name>/` | `~/.claude/agents/<name>.md` |
-| Codex — project | `.agents/skills/<name>/` | — |
-| Codex — user | `~/.codex/skills/<name>/` | — |
+| Codex — project | `.agents/skills/<name>/` | `.codex/agents/<name>.toml` |
+| Codex — user | `~/.codex/skills/<name>/` | `~/.codex/agents/<name>.toml` |
 | Hermes | `~/.hermes/skills/<category>/<name>/` or `skills.external_dirs` | — |
 
 Rules:

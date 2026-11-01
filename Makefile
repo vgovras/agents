@@ -9,6 +9,8 @@ CMD := $(word 2,$(MAKECMDGOALS))
 .PHONY: help $(NAMESPACES)
 
 help:
+	@echo 'Usage: make <namespace> <command>'
+	@echo
 	@grep -hE '^[a-z]+/[a-z-]+:.*## ' Makefile | grep -E '^$(or $(NS_FILTER),[a-z]+)/' \
 	  | sed -E 's|^([a-z]+)/([a-z-]+):.*## |\1 \2\t|' \
 	  | awk -F'\t' '{printf "  make %-22s %s\n", $$1, $$2}'
@@ -24,6 +26,7 @@ $(wordlist 2,99,$(MAKECMDGOALS)):
 endif
 
 skill/tui: ## skills, agents, MCP, instructions: state per target, mark (space), install marked (enter), remove (x), diff (d)
+	@[ -f .env ] || { cp env.example .env && chmod 600 .env; }
 	@scripts/skill-tui/skill-tui.sh tui
 
 skill/list: ## same as a plain table

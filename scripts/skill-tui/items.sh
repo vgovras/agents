@@ -39,7 +39,9 @@ collect_rows() {
   for target in "${TARGETS[@]}"; do
     for file in "$(install_dir skill "$target")"/*/SKILL.md; do [[ -f $file ]] && add_row skill "$(basename "$(dirname "$file")")" ""; done
   done
-  for file in "$(install_dir agent claude)"/*.md; do [[ -f $file ]] && add_row agent "$(basename "$file" .md)" ""; done
+  for file in "$(install_dir agent claude)"/*.md "$(install_dir agent codex)"/*.toml; do
+    [[ -f $file ]] && { name=$(basename "$file"); add_row agent "${name%.*}" ""; }
+  done
   while read -r name; do [[ -n $name ]] && add_row mcp "$name" ""; done < <(installed_mcp_names)
   for target in "${TARGETS[@]}"; do
     while read -r name; do [[ -n $name ]] && add_row instruction "$name" ""; done < <(section_names instruction "$target")
@@ -90,6 +92,7 @@ collect_states() {
 is_same() { # kind name src target installed
   if [[ $1 == mcp ]]; then [[ $5 == "$(expected_mcp_json "$3" "$4")" ]] && is_section_same "$2" "$3" "$4"
   elif [[ $1 == instruction ]]; then [[ $(installed_section "instruction:$2" "$4") == "$(<"$3")" ]]
+  elif [[ $1 == agent ]]; then diff -q <(agent_file "$3" "$4") "$5" >/dev/null
   else diff -rq "$3" "$5" >/dev/null; fi
 }
 

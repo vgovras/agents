@@ -5,6 +5,7 @@ install_item() {
   if [[ $1 == instruction ]]; then add_section "instruction:$2" "$3" "$4"; return; fi
   local path; path=$(install_path "$1" "$4" "$2")
   mkdir -p "$(dirname "$path")"
+  if [[ $1 == agent ]]; then agent_file "$3" "$4" >"$path.installing" && mv "$path.installing" "$path"; return; fi
   # the old copy goes only after the new one is complete
   rm -rf "$path.installing" && cp -r "$3" "$path.installing" && rm -rf "$path" && mv "$path.installing" "$path"
 }
@@ -21,6 +22,7 @@ show_diff() {
   if [[ $1 == instruction ]]; then
     diff -u --label repo --label installed "$3" <(installed_section "instruction:$2" "$4"); return
   fi
+  if [[ $1 == agent ]]; then diff -u --label repo --label installed <(agent_file "$3" "$4") "$(install_path "$1" "$4" "$2")"; return; fi
   if [[ $1 != mcp ]]; then diff -ru "$3" "$(install_path "$1" "$4" "$2")"; return; fi
   printf 'repo:      %s\ninstalled: %s\n' "$(expected_mcp_json "$3" "$4")" "$(installed_mcp_json "$2" "$4")" \
     | sed 's/"headers":{[^}]*}/"headers":"***"/g' # hide tokens
