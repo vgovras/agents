@@ -13,5 +13,5 @@
 ## Account existence
 
 - Do not reveal whether an account exists: sign in returns the same `401` for an unknown email and a wrong password.
-- `POST /passwordResets` always returns `202` with `result: null` and no `Location` (the only `202` that is not a job).
+- `POST /passwords/reset` always returns `200` with `result: null`.
 - Sign up or an email change to a taken email is `409`; this leak is accepted and rate-limited.

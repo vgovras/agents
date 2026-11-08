@@ -52,7 +52,7 @@ Read when the task has them:
 - `POST` on a collection creates. `PATCH` updates fields. `PUT` replaces a singleton or adds/updates a join resource; collection items are never `PUT`. `DELETE` removes (on a singleton, resets it).
 - Custom methods are `POST` with a camelCase verb as the last segment:
   - on an item: `POST /orders/:orderId/cancel`;
-  - on a collection, for batches and for targets identified by a secret instead of an id: `POST /documents/batchDelete`, `POST /sessions/refresh`, `POST /passwordResets/confirm`;
+  - on a collection, for batches and for targets identified by a secret instead of an id: `POST /documents/batchDelete`, `POST /sessions/refresh`, `POST /passwords/reset/confirm`;
   - nested under an owner when scoped to it: `POST /users/me/sessions/revokeAll` (all but the current session).
 - Name transitions by who performs them: `cancel` by the side that created the resource (guest, inviter); `accept` / `decline` by the recipient (invitee); `confirm` / `reject` by the side that approves it (restaurant, admin). Other verbs only for transitions these do not describe (`markReady`, `pickUp`, `deliver`).
 - Custom method instead of `PATCH` only when the change:
@@ -66,8 +66,8 @@ Read when the task has them:
   | Process | Start | Finish |
   |---|---|---|
   | sign in | `POST /sessions` | — |
-  | password reset | `POST /passwordResets` | `POST /passwordResets/confirm` |
-  | email verification | sign up, or `POST /emailVerifications` (resend, authenticated) | `POST /emailVerifications/confirm` |
+  | password reset | `POST /passwords/reset` | `POST /passwords/reset/confirm` |
+  | email verification | sign up, or `POST /contacts/confirm/resend` (authenticated) | `POST /contacts/confirm` |
   | email change | `POST /users/me/emailChanges` | `POST /emailChanges/confirm` |
   | invitation | `POST /channels/:channelId/invitations` | `POST /invitations/:invitationId/accept` |
 
@@ -162,8 +162,8 @@ A list is never a bare array. Every list endpoint returns this object as `result
 | `403` | the caller can read the target but their role may not perform the action |
 | `404` | the path target does not exist, is not visible to the caller, or its id in the path is malformed |
 | `409` | the request conflicts with the state of the path target (slot taken, invalid transition, duplicate unique value) |
-| `410` | only for resources whose expiry is part of their contract (an expired export); deleted resources are `404` |
-| `422` | validation failed, including references in the body the server cannot resolve: unknown ids, unknown/expired/used process tokens, too many batch items |
+| `410` | a process token (password reset, email verification) that is malformed, unknown, expired or used, and resources whose expiry is part of their contract (an expired export); deleted resources are `404` |
+| `422` | validation failed, including references in the body the server cannot resolve: unknown ids, too many batch items |
 
 Every `201` and job `202` sets `Location` to the item's flat path, or to the join path for joins.
 
