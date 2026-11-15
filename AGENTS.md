@@ -9,6 +9,7 @@ Each item's full "when to use" is in its frontmatter `description` — read it t
 |---|---|---|---|
 | skill | `clean-code` | `skills/clean-code/` | code style, any language |
 | skill | `backend-module-structure` | `skills/architectures/backend-module-structure/` | backend module architecture, any language |
+| skill | `backend-plan` | `skills/backend-plan/` | backend plan format: API examples, file tree, Mermaid |
 | skill | `rest-api-design` | `skills/rest-api-design/` | REST endpoints/controllers |
 | skill | `testing` | `skills/testing/` | unit/integration/e2e tests (TS) |
 | skill | `typescript` | `skills/typescript/` | tsconfig, imports, types, enums (TS) |
@@ -20,8 +21,8 @@ Each item's full "when to use" is in its frontmatter `description` — read it t
 | skill (remote) | `ponytail` | `skills/ponytail/remote.env` | smallest complete change |
 | agent | `backend-architect` | `agents/backend-architect.md` | backend design plan before non-trivial work |
 | agent | `coder` | `agents/coder.md` | implement a user task (inline or `tasks/`) |
-| agent | `reviewer` | `agents/reviewer.md` | review a plan before coding, a diff before reporting done |
-| instruction | `backend-workflow` | `instructions/backend-workflow.md` | backend orchestrator rules: backend-architect → reviewer → coder → reviewer |
+| agent | `reviewer` | `agents/reviewer.md` | review a plan or a diff on request |
+| instruction | `backend-workflow` | `instructions/backend-workflow.md` | backend coordinator rules: own plan → parallel haiku coders → coordinator fixes |
 | mcp | `jira` | `mcp/jira.env` | Atlassian Rovo (Jira, Confluence), OAuth |
 | mcp | `mcp-server-context7` | `mcp/mcp-server-context7.env` | library docs; optional `CONTEXT7_API_KEY` in `.env` |
 

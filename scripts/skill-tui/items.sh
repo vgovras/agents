@@ -1,35 +1,35 @@
 # Rows of the table: "kind|name|src". src is the repo copy; "" = installed but not in the repo (or a failed fetch).
+# A cell is one row x one target: cell = row * ncols + col. STATES and SELECTED are indexed by cell.
 
-declare -A STATES      # "row/col" -> state, filled by collect_rows (slow: CLI calls, diffs)
-declare -A REMOTE_DIRS # skill name -> fetched copy, filled once per run
-declare -A DEPS        # "kind/name" -> "kind/name ..." it needs, from deps.conf
-declare -A ROW_INDEX   # "kind/name" -> its index in ROWS
+STATES=()    # cell -> state, filled by collect_states (slow: CLI calls, diffs)
+DEP_LINES=() # "kind/name kind/name ..." = an item, then what it needs (from deps.conf)
 
-fetch_remote() { # skills/<name>/remote.env (REPO, DIR) -> fills REMOTE_DIRS[name] from ~/.cache/harness/<name>
+cell_of() { echo $(($1 * ${#TARGETS[@]} + $2)); } # row col -> cell
+state_of() { echo "${STATES[$1]:-}"; }           # cell -> state
+
+fetch_remote() { # skills/<name>/remote.env (REPO, DIR) -> echoes the fetched copy in ~/.cache/harness/<name>; nothing when it fails
   local REPO DIR name cache
   name=$(basename "$(dirname "$1")")
-  [[ -z ${REMOTE_DIRS[$name]+set} ]] || return 0
   source "$1"
   cache=~/.cache/harness/$name
-  REMOTE_DIRS[$name]=
   { git -C "$cache" pull -q --depth 1 || { rm -rf "$cache" && git clone -q --depth 1 "$REPO" "$cache"; }; } \
-    </dev/null &>/dev/null && REMOTE_DIRS[$name]=$cache/$DIR
+    </dev/null &>/dev/null && echo "$cache/$DIR"
 }
 
 add_row() { # kind name src; the first row per kind/name wins (repo rows are added first)
-  [[ -z ${seen[$1/$2]:-} ]] || return 0
-  seen[$1/$2]=1
+  [[ $seen != *" $1/$2 "* ]] || return 0
+  seen+="$1/$2 "
   ROWS+=("$1|$2|$3")
 }
 
 collect_rows() {
-  local -A seen
-  local file name target i kind
+  local seen=" " file name target i kind line
+  local -a sorted=()
   ROWS=()
   load_codex_mcp
   while read -r file; do
     name=$(basename "$(dirname "$file")")
-    if [[ $file == */remote.env ]]; then fetch_remote "$file"; add_row skill "$name" "${REMOTE_DIRS[$name]}"
+    if [[ $file == */remote.env ]]; then add_row skill "$name" "$(fetch_remote "$file")"
     else add_row skill "$name" "$(dirname "$file")"; fi
   done < <(find skills -name SKILL.md -o -name remote.env)
   for file in agents/*.md; do add_row agent "$(basename "$file" .md)" "$file"; done
@@ -47,34 +47,50 @@ collect_rows() {
     while read -r name; do [[ -n $name ]] && add_row instruction "$name" ""; done < <(section_names instruction "$target")
   done
 
-  mapfile -t ROWS < <(printf '%s\n' "${ROWS[@]}" | sort)
-  ROW_INDEX=()
-  for i in "${!ROWS[@]}"; do IFS='|' read -r kind name _ <<<"${ROWS[i]}"; ROW_INDEX[$kind/$name]=$i; done
+  while IFS= read -r line; do [[ -n $line ]] && sorted+=("$line"); done < <(printf '%s\n' "${ROWS[@]}" | sort)
+  ROWS=("${sorted[@]}")
   load_deps
   collect_states
 }
 
-load_deps() { # deps.conf lines "<kind>/<name>: <kind>/<name> ..." -> DEPS
+row_index() { # kind/name -> its index in ROWS; fails when there is no such row
+  local i kind name _
+  for i in "${!ROWS[@]}"; do
+    IFS='|' read -r kind name _ <<<"${ROWS[i]}"
+    [[ "$kind/$name" == "$1" ]] && { echo "$i"; return 0; }
+  done
+  return 1
+}
+
+load_deps() { # deps.conf lines "<kind>/<name>: <kind>/<name> ..." -> DEP_LINES
   local item needs
   local -a list
-  DEPS=()
+  DEP_LINES=()
   [[ -f deps.conf ]] || return 0
   while IFS=: read -r item needs; do
     [[ -z $item || $item == '#'* ]] && continue
     read -ra list <<<"$needs"
-    DEPS[$item]=${list[*]}
+    DEP_LINES+=("$item ${list[*]}")
   done <deps.conf
 }
 
+deps_of() { # kind/name -> the kind/name items it needs directly, space-separated
+  local line
+  for line in "${DEP_LINES[@]}"; do
+    if [[ ${line%% *} == "$1" ]]; then echo "${line#* }"; return; fi
+  done
+}
+
 dep_closure() { # kind/name -> every kind/name it needs, transitively, once each
-  local -A seen=([$1]=1)
+  local seen=" $1 " current dep
   local -a queue=("$1")
-  local current dep
   while ((${#queue[@]})); do
-    current=${queue[0]} queue=("${queue[@]:1}")
-    for dep in ${DEPS[$current]:-}; do
-      [[ -z ${seen[$dep]:-} ]] || continue
-      seen[$dep]=1 queue+=("$dep")
+    current=${queue[0]}
+    queue=("${queue[@]:1}")
+    for dep in $(deps_of "$current"); do
+      [[ $seen == *" $dep "* ]] && continue
+      seen+="$dep "
+      queue+=("$dep")
       echo "$dep"
     done
   done
@@ -85,7 +101,7 @@ collect_states() {
   STATES=()
   for i in "${!ROWS[@]}"; do
     IFS='|' read -r kind name src <<<"${ROWS[i]}"
-    for j in "${!TARGETS[@]}"; do STATES[$i/$j]=$(get_state "$kind" "$name" "$src" "${TARGETS[j]}"); done
+    for j in "${!TARGETS[@]}"; do STATES[$(cell_of "$i" "$j")]=$(get_state "$kind" "$name" "$src" "${TARGETS[j]}"); done
   done
 }
 
