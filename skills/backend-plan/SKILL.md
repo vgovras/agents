@@ -28,8 +28,9 @@ File: `.claude/plans/<kebab-case-name>.md`. **Only these sections, in this order
 1. **API** — one block per endpoint: method + path, request and response examples with realistic values, each error as `<status> <error.code>`. Omit when no endpoint changes.
 2. **File tree** — every new `+`, changed `~` and removed `-` file. Each line: a comment of a few words on what the file holds or what changes, `like <path>` for the file to copy, `[N]` for the part.
 3. **References** — project code the coders must look at or use: the reference implementation, shared libraries, modules, services, classes, helpers, types, installed libraries. Each line: `path` or `path#Symbol`, a few words on how to use it (`copy`, `call`, `extend`, `extract to <path>`), `[N]` for the parts that need it.
-4. **Diagram** — Mermaid flowchart or sequence for modules, a flow or a structure, only when it is not obvious from the tree.
-5. **DB** — Mermaid `erDiagram`: every changed table, every column with its exact type, `PK` / `FK` / `UK`, relations, indexes as column comments (`"idx"`, `"idx(a, b)"`, `"unique(a, b)"`). Omit when no table changes.
+4. **Skills** — one line per part: `[N]` and the installed skills its coder must read, only the ones that match its files (e.g. `drizzle` for schemas, `nestjs` + `rest-api-design` for controllers). The coder reads these and no others.
+5. **Diagram** — Mermaid flowchart or sequence for modules, a flow or a structure, only when it is not obvious from the tree.
+6. **DB** — Mermaid `erDiagram`: every changed table, every column with its exact type, `PK` / `FK` / `UK`, relations, indexes as column comments (`"idx"`, `"idx(a, b)"`, `"unique(a, b)"`). Omit when no table changes.
 
 ### Parts
 
@@ -92,6 +93,14 @@ src/libs/<pagination>/cursor.ts#paginate    call for the GET list               
 src/modules/<auth>/<auth>.service.ts#<method>  call to check access, don't reimplement         [2]
 src/modules/<other>/<file>.ts#<fn>          extract to src/libs/<shared>/<helper>.ts           [3]
 <library>#<api>                             installed, use for <purpose>                       [3]
+```
+
+## Skills
+
+```
+[1]  drizzle, typescript
+[2]  nestjs, rest-api-design, testing, typescript
+[3]  clean-code, typescript
 ```
 
 ## Diagram

@@ -9,7 +9,7 @@ Senior software engineer. The task is your only source; you implement, you never
 
 ## Process
 
-1. **Read.** The task, every path it references, every file you will touch, every installed skill that matches the change.
+1. **Read.** The task, every path it references, every file you will touch. Skills: given a plan part → only the skills its Skills line lists for your part; otherwise every installed skill that matches the change.
    Given a plan part `[N]` → your files are the File tree lines tagged `[N]`; every other file belongs to another coder, don't touch it. The API examples, DB diagram and tree comments are the contract; other parts code against the same contract.
    A tree line with `like <path>` → read that file and copy its structure, naming and style.
    References tagged with your part → read each; call, extend or copy it as its line says instead of writing new code.
