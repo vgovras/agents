@@ -1,17 +1,21 @@
-# Where each kind of item is installed, per target tool. A missing key = the target does not support the kind.
+# Where each kind of item is installed, per target tool. Empty output = the target does not support the kind.
 TARGETS=(claude codex)
-declare -A INSTALL_DIRS=(
-  [skill/claude]=$HOME/.claude/skills
-  [skill/codex]=$HOME/.codex/skills
-  [agent/claude]=$HOME/.claude/agents
-  [agent/codex]=$HOME/.codex/agents
-  [mcp/claude]="claude config"
-  [mcp/codex]="codex config"
-  [instruction/claude]=$HOME/.claude/CLAUDE.md
-  [instruction/codex]=$HOME/.codex/AGENTS.md
-)
 
-install_dir() { echo "${INSTALL_DIRS[$1/$2]:-}"; } # kind target
+install_dir() { # kind target -> the directory (mcp: a label, instruction: the file); "" when not supported
+  case $1/$2 in
+    skill/claude) echo "$HOME/.claude/skills" ;;
+    skill/codex) echo "$HOME/.codex/skills" ;;
+    agent/claude) echo "$HOME/.claude/agents" ;;
+    agent/codex) echo "$HOME/.codex/agents" ;;
+    mcp/claude) echo "claude config" ;;
+    mcp/codex) echo "codex config" ;;
+    instruction/claude) echo "$HOME/.claude/CLAUDE.md" ;;
+    instruction/codex) echo "$HOME/.codex/AGENTS.md" ;;
+  esac
+}
+
+# Global instructions file per target: instructions and MCP "when to use" sections go here.
+instruction_file() { install_dir instruction "$1"; } # target
 
 install_path() { # kind target name
   local dir; dir=$(install_dir "$1" "$2")
@@ -28,6 +32,3 @@ agent_file() { # agent .md, target -> the file to install: Claude Code takes it 
     "$(jq -n --arg v "$(sed -n '2,/^---$/s/^name: //p' "$1")" '$v')" \
     "$(jq -n --arg v "$(sed -n '2,/^---$/s/^description: //p' "$1")" '$v')" "$body"
 }
-
-# Global instructions file per target: instructions and MCP "when to use" sections go here.
-declare -A INSTRUCTION_FILES=([claude]=$HOME/.claude/CLAUDE.md [codex]=$HOME/.codex/AGENTS.md)

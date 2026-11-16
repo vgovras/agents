@@ -9,9 +9,9 @@ load_mcp() { # src -> sets URL TOKEN_ENV TOKEN_HEADER TOKEN; callers declare the
 }
 
 save_token() { # variable value -> the git-ignored .env (replaces an old value)
-  touch .env && chmod 600 .env
-  sed -i "/^$1=/d" .env
-  printf '%s=%s\n' "$1" "$2" >>.env
+  touch .env
+  { grep -v "^$1=" .env; printf '%s=%s\n' "$1" "$2"; } >.env.tmp # BSD and GNU sed differ in `sed -i`, so no sed here
+  chmod 600 .env.tmp && mv .env.tmp .env
 }
 
 load_codex_mcp() { CODEX_MCP=$(codex mcp list --json </dev/null 2>/dev/null || echo '[]'); }
