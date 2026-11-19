@@ -18,6 +18,7 @@ Each item's full "when to use" is in its frontmatter `description` — read it t
 | skill | `dev-environment` | `skills/dev-environment/` | compose + Makefile, pnpm, dependency versions |
 | skill | `lint-format` | `skills/lint-format/` | oxlint + oxfmt, custom rules, import boundaries |
 | skill | `jira-branches` | `skills/jira-branches/` | Jira issue → RC / story / feat branches + draft PR |
+| skill | `pr-review` | `skills/pr-review/` | review a PR: checkout, resolve fixed threads, Jira + rules check, one-sentence comments → post on approval |
 | skill (remote) | `ponytail` | `skills/ponytail/remote.env` | smallest complete change |
 | agent | `backend-architect` | `agents/backend-architect.md` | backend design plan before non-trivial work |
 | agent | `coder` | `agents/coder.md` | implement a user task (inline or `tasks/`) |
